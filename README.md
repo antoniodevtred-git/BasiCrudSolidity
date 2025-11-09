@@ -1,4 +1,4 @@
-# CrudBasic
+# BasicCrud
 
 **BasicCrud** es un smart contract desarrollado en **Solidity 0.8.24** que implementa un sistema de gestión de relojes de lujo con control de roles y CRUD completo.  
 Permite registrar, listar, editar y marcar relojes como no disponibles, diferenciando los permisos entre administradores y usuarios normales.
