@@ -1,47 +1,43 @@
-# BasicCrud
+# 💎 BasicCrud
 
-**BasicCrud** es un smart contract desarrollado en **Solidity 0.8.24** que implementa un sistema de gestión de relojes de lujo con control de roles y CRUD completo.  
-Permite registrar, listar, editar y marcar relojes como no disponibles, diferenciando los permisos entre administradores y usuarios normales.
-
----
-
-## 🧱 Estructura general
-
-### Roles disponibles
-
-| Rol | Valor | Permisos |
-|-----|--------|-----------|
-| `ADMIN` | 1 | Puede crear, editar, eliminar y ver toda la información (incluyendo precios de compra y beneficios). |
-| `NORMAL` | 2 | Solo puede consultar información pública (sin ver precios de compra ni beneficios). |
-| `NONE` | 0 | Sin permisos asignados. |
+**BasicCrud** is a smart contract developed in **Solidity 0.8.24** that implements a luxury watch management system with full role control and CRUD functionality.  
+It allows registering, listing, editing, and marking watches as unavailable, differentiating permissions between administrators and regular users.
 
 ---
 
-## ⚙️ Funcionalidades principales
+## 🧱 General Structure
 
-| Función | Descripción | Permiso |
-|----------|--------------|----------|
-| `setRole(address user, Role role)` | Asigna un rol a un usuario. | Solo `owner` |
-| `registerWatch(string manufacture, string model, string description, uint64 year, uint256 purchase_price, uint256 sell_price)` | Crea un nuevo reloj con sus datos y calcula automáticamente el beneficio. | Solo `ADMIN` |
-| `getWatch(uint64 id)` | Muestra la información de un reloj. Los usuarios normales no ven el precio de compra ni el beneficio. | Todos |
-| `updateWatch(uint64 id, uint256 newSellPrice, string newDescription)` | Actualiza el precio de venta y descripción (solo si no está vacía). | Solo `ADMIN` |
-| `deleteWatch(uint64 id)` | Marca un reloj como no disponible (`available = false`) sin eliminarlo físicamente. | Solo `ADMIN` |
-| `listActiveWatches()` | Devuelve un listado de todos los relojes disponibles. | Todos |
-| `getActiveWatchesCount()` | Devuelve cuántos relojes siguen disponibles. | Todos |
+### Available Roles
+
+| Role | Value | Permissions |
+|------|--------|-------------|
+| `ADMIN` | 1 | Can create, edit, delete, and view all information (including purchase prices and profits). |
+| `NORMAL` | 2 | Can only view public information (purchase prices and profits are hidden). |
+| `NONE` | 0 | No assigned permissions. |
 
 ---
 
-## 🧠 Cálculo de beneficio
+## ⚙️ Main Functionalities
 
-El contrato calcula automáticamente el beneficio de cada reloj al registrarlo o al modificar su precio:
+| Function | Description | Permission |
+|-----------|--------------|-------------|
+| `setRole(address user, Role role)` | Assigns a role to a user. | Only `owner` |
+| `registerWatch(string manufacture, string model, string description, uint64 year, uint256 purchase_price, uint256 sell_price)` | Creates a new watch with its data and automatically calculates profit. | Only `ADMIN` |
+| `getWatch(uint64 id)` | Displays the information of a watch. Regular users cannot see purchase price or profit. | Everyone |
+| `updateWatch(uint64 id, uint256 newSellPrice, string newDescription)` | Updates the selling price and description (only if not empty). | Only `ADMIN` |
+| `deleteWatch(uint64 id)` | Marks a watch as unavailable (`available = false`) without deleting it physically. | Only `ADMIN` |
+| `listActiveWatches()` | Returns a list of all available watches. | Everyone |
+| `getActiveWatchesCount()` | Returns how many watches are still available. | Everyone |
+
+---
+
+## 🧠 Profit Calculation
+
+The contract automatically calculates the profit of each watch when it is registered or when its selling price is modified:
 
 ```solidity
 profit = int256(sell_price) - int256(purchase_price);
-Este valor se almacena en la estructura Watch y se actualiza con cada edición.
 
-🧩 Estructura de datos
-Watch
-Representa un reloj en el sistema.
 struct Watch {
     uint64 id;
     string manufacture;
@@ -53,40 +49,44 @@ struct Watch {
     int256 profit;
     bool available;
 }
-🧾 Eventos
-WatchRegistered(uint64 id, string manufacture, string model, uint64 year)	Emite al crear un reloj.
-WatchUpdated(uint64 id, uint256 newSellPrice, string newDescription, int256 newProfit)	Emite al actualizar un reloj.
-WatchDeleted(uint64 id)	Emite al marcar un reloj como no disponible.
 
-🔒 Modificadores
-onlyOwner → Solo el creador del contrato puede ejecutar la función.
-onlyAdmin → Solo los usuarios con rol ADMIN pueden ejecutar la función.
+| Event                                                                                    | Description                                    |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `WatchRegistered(uint64 id, string manufacture, string model, uint64 year)`              | Emitted when a watch is created.               |
+| `WatchUpdated(uint64 id, uint256 newSellPrice, string newDescription, int256 newProfit)` | Emitted when a watch is updated.               |
+| `WatchDeleted(uint64 id)`                                                                | Emitted when a watch is marked as unavailable. |
 
-🧪 Ejemplo de uso en Remix
-Compilación
 
-Abre Remix IDE
+🔒 Modifiers
 
-Selecciona compilador Solidity 0.8.24
+onlyOwner → Only the contract creator can execute the function.
 
-Compila LuxuryWatchesDefi.sol
+onlyAdmin → Only users with the ADMIN role can execute the function.
 
-Despliegue
+🧪 Example Usage in Remix
+Compilation
 
-Ir a Deploy & Run Transactions
+Open Remix IDE
 
-Seleccionar entorno Remix VM (London)
+Select compiler Solidity 0.8.24
 
-Pulsar Deploy
+Compile LuxuryWatchesDefi.sol
 
-Tu dirección será ADMIN automáticamente.
+Deployment
 
-📊 Estado actual
-✅ CRUD completo
-✅ Sistema de roles (ADMIN / NORMAL)
-✅ Eliminación lógica (available = false)
-✅ Listado dinámico de relojes activos
-✅ Beneficio calculado automáticamente
-✅ Control de permisos por función
+Go to Deploy & Run Transactions
 
----
+Choose environment Remix VM (London)
+
+Click Deploy
+
+Your address will automatically be assigned as ADMIN.
+
+📊 Current Status
+
+✅ Full CRUD functionality
+✅ Role-based system (ADMIN / NORMAL)
+✅ Logical deletion (available = false)
+✅ Dynamic listing of active watches
+✅ Automatic profit calculation
+✅ Permission control for each function
